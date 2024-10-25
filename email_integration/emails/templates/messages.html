@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Email Messages</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Email Messages</h1>
+    <div id="progress-container">
+        <p>Progress: <span id="progress">0%</span></p>
+        <div id="progress-bar" style="width: 0; height: 20px; background-color: green;"></div>
+    </div>
+    <button id="startImport">Start Import</button>
+
+    <script>
+        const socket = new WebSocket("ws://localhost:8000/ws/progress/");
+
+        $('#startImport').click(() => {
+            socket.send(JSON.stringify({'action': 'start_import'}));
+        });
+
+        socket.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            $('#progress').text(data.progress + '%');
+            $('#progress-bar').css('width', data.progress + '%');
+        };
+    </script>
+</body>
+</html>
